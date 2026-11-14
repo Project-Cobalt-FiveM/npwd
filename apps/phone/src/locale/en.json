@@ -306,7 +306,6 @@
         "ROLE_OWNER": "Owner",
         "ROLE_ADMIN": "Admin",
         "ROLE_MEMBER": "Member",
-        "FROZEN": "Frozen",
         "NO_GROUP_ACCOUNTS": "No joint or business accounts",
         "NO_GROUP_ACCOUNTS_CAPTION": "Nobody to share with? Fleeca joint accounts: all the commitment, none of the dinners. Open one at any branch.",
         "TRANSFER": "Transfer Money",
@@ -444,8 +443,6 @@
         "FAIL_NO_PERMISSION": "You can't do that on this account",
         "FAIL_SAME_ACCOUNT": "Pick a different account to send to",
         "FAIL_INSUFFICIENT_FUNDS": "Not enough money in this account, after fees",
-        "FAIL_ACCOUNT_FROZEN": "This account is frozen",
-        "FAIL_RECIPIENT_FROZEN": "The recipient's account is frozen",
         "FAIL_ALREADY_MEMBER": "They're already on this account",
         "FAIL_MEMBER_LIMIT": "This account already has the most members it can take",
         "FAIL_UNAVAILABLE": "Fleeca isn't answering. Try again in a moment."

@@ -8,8 +8,6 @@ export type BankingFailure =
   | 'no_permission'
   | 'same_account'
   | 'insufficient_funds'
-  | 'account_frozen'
-  | 'recipient_frozen'
   | 'already_member'
   | 'member_limit'
   | 'unavailable';
@@ -21,7 +19,6 @@ export interface BankingAccount {
   type: BankingAccountType;
   name: string;
   balance: number;
-  frozen: boolean;
   primary: boolean;
   role: BankingRole;
 }

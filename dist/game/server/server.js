@@ -55680,8 +55680,6 @@ var FAILURES = [
   "no_permission",
   "same_account",
   "insufficient_funds",
-  "account_frozen",
-  "recipient_frozen",
   "already_member",
   "member_limit"
 ];
@@ -55703,7 +55701,6 @@ var toAccount = (row) => {
     role,
     balance,
     name: text(row.name) ?? accountId,
-    frozen: row.frozen === true,
     primary: row.primary === true
   };
 };

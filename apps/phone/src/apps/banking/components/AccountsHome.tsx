@@ -35,7 +35,6 @@ const AccountRow: React.FC<{ account: BankingAccount; first: boolean; onOpen: ()
       digits: endingDigits(account.accountId),
     }),
     roleKey && text(roleKey),
-    account.frozen && text('COBALT.BANKING.FROZEN'),
   ]
     .filter(Boolean)
     .join(' · ');

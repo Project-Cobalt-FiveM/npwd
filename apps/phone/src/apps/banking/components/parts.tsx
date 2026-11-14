@@ -13,8 +13,7 @@ export const MONEY_IN = '#0F532A';
 export const FOCUS_RING =
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#0F532A]';
 
-export const canSend = (account: BankingAccount): boolean =>
-  account.role !== 'viewer' && !account.frozen;
+export const canSend = (account: BankingAccount): boolean => account.role !== 'viewer';
 
 export const failureKey = (reason: BankingFailure): string =>
   `COBALT.BANKING.FAIL_${reason.toUpperCase()}`;
