@@ -50103,7 +50103,7 @@ async function findOrGeneratePhoneNumber(identifier) {
 }
 
 // server/players/player.class.ts
-var Player = class {
+var Player2 = class {
   constructor({ source: source2, identifier, phoneNumber, username }) {
     this.source = source2;
     this._identifier = identifier;
@@ -51021,7 +51021,7 @@ var _PlayerService = class {
     const username = GetPlayerName(pSource.toString());
     playerLogger.info(`Started loading for ${username} (${pSource})`);
     const phone_number = await findOrGeneratePhoneNumber(playerIdentifier);
-    const newPlayer = new Player({
+    const newPlayer = new Player2({
       identifier: playerIdentifier,
       source: pSource,
       username,
@@ -51046,7 +51046,7 @@ var _PlayerService = class {
       if (!phoneNumber)
         return null;
     }
-    return new Player({
+    return new Player2({
       source: src,
       identifier,
       phoneNumber,
@@ -55957,6 +55957,20 @@ on("cobalt_banking:balanceChanged", (accountId, balance) => {
 on("playerDropped", () => {
   watchedAccounts.delete(getSource());
 });
+
+// ../../shared/phone-prop.ts
+var PHONE_PROP_MODELS = ["prop_amb_phone", "dolu_npwd_phone"];
+var PHONE_PROP_EVENT = "npwd:phoneProp";
+var PHONE_PROP_STATE = "npwdPhoneProp";
+var isPhonePropModel = (value) => PHONE_PROP_MODELS.some((model) => model === value);
+var isPhoneProp = (value) => typeof value === "object" && value !== null && "model" in value && "variation" in value && isPhonePropModel(value.model) && Number.isInteger(value.variation);
+
+// server/phone-prop.ts
+var setPhoneProp = (src, prop) => {
+  Player(src).state.set(PHONE_PROP_STATE, isPhoneProp(prop) ? prop : null, true);
+};
+onNet(PHONE_PROP_EVENT, (prop) => setPhoneProp(global.source, prop));
+on("playerDropped", () => setPhoneProp(global.source, null));
 
 // server/bridge/bridge.utils.ts
 var bridgeLogger = mainLogger.child({ module: "bridge" });

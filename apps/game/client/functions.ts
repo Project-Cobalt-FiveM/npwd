@@ -1,75 +1,40 @@
 import { KvpItems } from '@typings/settings';
+import { PhonePropModel } from '@shared/phone-prop';
 import KvpService from './settings/client-kvp.service';
-import { Delay } from '../utils/fivem';
+import { sharePhoneProp, spawnPhoneProp } from './phone-prop';
 
 global.phoneProp = 0;
 let propCreated = false;
+let propRequest = 0;
 
-/* * * * * * * * * * * * *
- *
- *  Prop Deletion/Creation handling
- *
- * * * * * * * * * * * * */
-
-// TODO: add a option to make server side for people who use entity lockdown.
+const deleteOwnProp = () => {
+  if (global.phoneProp != 0) DeleteEntity(global.phoneProp);
+  global.phoneProp = 0;
+};
 
 export const newPhoneProp = async () => {
   const hasNPWDProps = GetConvarInt('NPWD_PROPS', 0);
-  let phoneModel;
-  if (hasNPWDProps) {
-    phoneModel = 'dolu_npwd_phone';
-  } else {
-    phoneModel = 'prop_amb_phone';
+  const model: PhonePropModel = hasNPWDProps ? 'dolu_npwd_phone' : 'prop_amb_phone';
+  const variation = (hasNPWDProps && KvpService.getKvpInt(KvpItems.NPWD_FRAME)) || 7;
+  const request = ++propRequest;
+
+  deleteOwnProp();
+  propCreated = true;
+
+  const entity = await spawnPhoneProp(PlayerPedId(), { model, variation });
+
+  if (request !== propRequest) {
+    DeleteEntity(entity);
+    return;
   }
-  removePhoneProp(); //deletes the already existing prop before creating another.
-  if (!propCreated) {
-    RequestModel(phoneModel);
 
-    while (!HasModelLoaded(phoneModel)) {
-      await Delay(1);
-    }
-
-    const playerPed = PlayerPedId();
-    const [x, y, z] = GetEntityCoords(playerPed, true);
-    global.phoneProp = CreateObject(GetHashKey(phoneModel), x, y, z + 0.2, true, true, true);
-    const boneIndex = GetPedBoneIndex(playerPed, 28422);
-    AttachEntityToEntity(
-      global.phoneProp, 
-      playerPed, 
-      boneIndex, 
-      0.0, 
-      0.0, 
-      0.0, 
-      0.0, 
-      0.0, 
-      0.0, 
-      true, 
-      true, 
-      false, 
-      false, 
-      2, 
-      true
-    ); //-- Attaches the phone to the player.
-    propCreated = true;
-
-    let txtVariation;
-
-    if (hasNPWDProps) {
-      txtVariation = KvpService.getKvpInt(KvpItems.NPWD_FRAME);
-    }
-
-    SetObjectTextureVariation(global.phoneProp, txtVariation || 7);
-    
-  } else if (propCreated) {
-    console.log('prop already created');
-  }
+  global.phoneProp = entity;
+  sharePhoneProp({ model, variation });
 };
 
 export function removePhoneProp() {
-  //-- Triggered in newphoneProp function. Only way to destory the prop correctly.
-  if (global.phoneProp != 0) {
-    DeleteEntity(global.phoneProp);
-    global.phoneProp = 0;
-    propCreated = false;
-  }
+  propRequest++;
+  deleteOwnProp();
+  if (propCreated) sharePhoneProp(null);
+  propCreated = false;
 }
